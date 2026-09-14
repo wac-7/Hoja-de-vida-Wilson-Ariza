@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hoja de Vida Wilson Ariza Camargo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#2b271e;
+    --bg-2:#181611;
+    --glass:rgba(255,255,255,0.055);
+    --glass-border:rgba(255,255,255,0.12);
+    --ink:#f3efe4;
+    --ink-dim:#b6ae9c;
+    --ink-faint:#8a8271;
+    --gold-1:#e8c56a;
+    --gold-2:#f6e6ad;
+    --gold-3:#a9782e;
+    --map:#6f96a0;
+    --line:rgba(255,255,255,0.09);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1100px 700px at 12% -10%, rgba(232,197,106,0.10), transparent 60%),
+      radial-gradient(900px 600px at 100% 100%, rgba(111,150,160,0.10), transparent 55%),
+      linear-gradient(160deg,var(--bg-1),var(--bg-2) 70%);
+    padding:64px 20px 80px;
+    display:flex;
+    justify-content:center;
+    overflow:hidden;
+  }
+  body.unlocked{overflow:visible;}
+  .sheet{
+    width:100%;
+    max-width:980px;
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:28px;
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    box-shadow:0 40px 90px -30px rgba(0,0,0,0.65);
+    overflow:hidden;
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1);
+  }
+  .sheet.revealed{opacity:1;transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    .sheet{transition:none;}
+  }
+
+  /* ---------- lamp intro overlay ---------- */
+  #lampOverlay{
+    position:fixed;
+    inset:0;
+    z-index:80;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:30px;
+    background:
+      radial-gradient(1100px 700px at 12% -10%, rgba(232,197,106,0.10), transparent 60%),
+      radial-gradient(900px 600px at 100% 100%, rgba(111,150,160,0.10), transparent 55%),
+      linear-gradient(160deg,var(--bg-1),var(--bg-2) 70%);
+    transition:opacity .7s ease, visibility .7s ease;
+  }
+  #lampOverlay.hide{opacity:0;visibility:hidden;pointer-events:none;}
+  .lamp-wrap{position:relative;width:220px;height:420px;user-select:none;}
+  .lamp-glow{
+    position:absolute;
+    top:-50px;left:50%;
+    transform:translateX(-50%);
+    width:360px;height:360px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,244,214,0) 0%,rgba(255,244,214,0) 70%);
+    filter:blur(4px);
+    transition:background .5s ease;
+    pointer-events:none;
+  }
+  .lamp-wrap.lit .lamp-glow{background:radial-gradient(circle,rgba(255,226,150,0.6) 0%,rgba(255,226,150,0) 68%);}
+  .lamp-svg{position:absolute;top:0;left:0;display:block;transition:filter .5s ease;}
+  .shade{fill:url(#shadeGrad);transition:fill .5s ease;}
+  .lamp-wrap.lit .shade{fill:url(#shadeGradLit);}
+  .lamp-wrap.lit .lamp-svg{filter:drop-shadow(0 0 34px rgba(255,214,140,0.65));}
+  .chain{
+    position:absolute;top:100px;left:150px;
+    width:7px;height:90px;
+    background:repeating-linear-gradient(180deg,var(--gold-2) 0 5px, transparent 5px 12px);
+    border-radius:4px;
+    box-shadow:0 0 8px rgba(232,197,106,0.35);
+  }
+  .pull-knob{
+    position:absolute;top:100px;left:150px;
+    width:18px;height:30px;
+    margin-left:-9px;
+    border-radius:9px;
+    background:linear-gradient(180deg,#fff2cf,var(--gold-1) 55%,var(--gold-3));
+    box-shadow:0 4px 14px rgba(0,0,0,0.45), 0 0 14px rgba(232,197,106,0.5), inset 0 1px 0 rgba(255,255,255,0.7);
+    cursor:grab;
+    touch-action:none;
+    transform:translate(0,90px);
+    z-index:5;
+  }
+  .pull-knob:active{cursor:grabbing;}
+  .lamp-caption{
+    font-size:14px;
+    color:var(--ink-dim);
+    text-align:center;
+    letter-spacing:0.2px;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    padding:48px 48px 36px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    gap:32px;
+    align-items:center;
+    position:relative;
+  }
+  .mark{
+    flex:0 0 auto;
+    width:86px;height:86px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:28px;
+    color:#241d0f;
+    background:linear-gradient(135deg,var(--gold-2),var(--gold-1) 55%,var(--gold-3));
+    box-shadow:0 10px 30px -8px rgba(232,197,106,0.55), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .id h1{
+    margin:0 0 6px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:clamp(26px,3.4vw,36px);
+    letter-spacing:0.2px;
+  }
+  .id .role{
+    margin:0 0 14px;
+    color:var(--gold-2);
+    font-size:15px;
+    font-weight:500;
+  }
+  .contact{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 18px;
+    font-size:13.5px;
+    color:var(--ink-dim);
+  }
+  .contact span{display:flex;align-items:center;gap:7px;}
+  .dot{width:4px;height:4px;border-radius:50%;background:var(--ink-faint);}
+
+  /* ---------- layout ---------- */
+  .body-grid{
+    display:grid;
+    grid-template-columns:270px 1fr;
+  }
+  @media (max-width:760px){
+    .body-grid{grid-template-columns:1fr;}
+    header{flex-direction:column;text-align:center;padding:40px 28px 28px;}
+    .contact{justify-content:center;}
+  }
+
+  aside{
+    padding:38px 32px;
+    border-right:1px solid var(--line);
+    background:rgba(0,0,0,0.14);
+  }
+  @media (max-width:760px){ aside{border-right:none;border-bottom:1px solid var(--line);} }
+
+  .side-block + .side-block{margin-top:32px;}
+  .side-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:12.5px;
+    color:var(--ink-faint);
+    margin:0 0 14px;
+    font-weight:600;
+  }
+  .skill-group{margin-bottom:14px;}
+  .skill-group h4{
+    margin:0 0 7px;
+    font-size:12.5px;
+    color:var(--gold-2);
+    font-weight:600;
+  }
+  .tags{display:flex;flex-wrap:wrap;gap:6px;}
+  .tag{
+    font-size:11.5px;
+    padding:4px 9px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid var(--line);
+    color:var(--ink-dim);
+  }
+  .edu-item{margin-bottom:14px;}
+  .edu-item .deg{font-size:13.5px;font-weight:500;color:var(--ink);}
+  .edu-item .sch{font-size:12.5px;color:var(--ink-dim);margin-top:2px;}
+  .edu-item .yr{font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
+
+  main{padding:38px 44px 12px;}
+  @media (max-width:760px){ main{padding:32px 26px 12px;} }
+
+  .lede{
+    font-size:15px;
+    line-height:1.7;
+    color:var(--ink-dim);
+    margin:0 0 34px;
+    max-width:62ch;
+  }
+
+  section.exp{margin-bottom:8px;}
+  .side-title.main-title{color:var(--ink-faint);margin-bottom:20px;}
+
+  .role-item{
+    position:relative;
+    padding:0 0 26px 22px;
+    border-left:1px solid var(--line);
+  }
+  .role-item:last-child{border-color:transparent;}
+  .role-item::before{
+    content:"";
+    position:absolute;
+    left:-4.5px;top:4px;
+    width:8px;height:8px;
+    border-radius:50%;
+    background:var(--gold-1);
+    box-shadow:0 0 0 4px rgba(232,197,106,0.15);
+  }
+  .role-head{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:4px;
+  }
+  .role-head .title{font-weight:600;font-size:15.5px;}
+  .role-head .dates{font-size:12.5px;color:var(--gold-2);white-space:nowrap;}
+  .role-item .co{font-size:13px;color:var(--map);margin-bottom:8px;}
+  .role-item ul{margin:0;padding-left:18px;}
+  .role-item li{font-size:13.5px;line-height:1.6;color:var(--ink-dim);margin-bottom:4px;}
+
+  details{
+    margin-top:26px;
+    border-top:1px solid var(--line);
+    padding-top:18px;
+  }
+  summary{
+    cursor:pointer;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink);
+    list-style:none;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  summary::-webkit-details-marker{display:none;}
+  summary::after{
+    content:"+";
+    font-size:18px;
+    color:var(--gold-1);
+    transition:transform .25s ease;
+  }
+  details[open] summary::after{transform:rotate(45deg);}
+  .cert-list{margin:16px 0 0;padding:0;list-style:none;}
+  .cert-list li{
+    display:flex;justify-content:space-between;gap:14px;
+    font-size:13.5px;color:var(--ink-dim);
+    padding:8px 0;border-bottom:1px dashed var(--line);
+  }
+  .cert-list li span:last-child{color:var(--ink-faint);white-space:nowrap;font-size:12px;}
+
+  footer{
+    padding:30px 44px 40px;
+    display:flex;justify-content:center;
+  }
+  .cta{
+    width:100%;
+    max-width:340px;
+    text-align:center;
+    padding:15px 20px;
+    border-radius:14px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    color:#241d0f;
+    text-decoration:none;
+    background:linear-gradient(120deg,var(--gold-2),var(--gold-1) 45%,var(--gold-3));
+    box-shadow:0 14px 30px -10px rgba(232,197,106,0.5);
+    transition:transform .2s ease;
+  }
+  .cta:hover{transform:translateY(-2px);}
+  @media print{
+    body{background:#fff;padding:0;}
+    .sheet{box-shadow:none;border:none;background:#fff;color:#111;}
+    footer{display:none;}
+  }
+</style>
+</head>
+<body>
+  <div id="lampOverlay">
+    <div class="lamp-wrap" id="lampWrap">
+      <div class="lamp-glow"></div>
+      <svg class="lamp-svg" viewBox="0 0 220 260" width="220" height="260">
+        <defs>
+          <linearGradient id="shadeGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#eee2c6"/>
+          </linearGradient>
+          <linearGradient id="shadeGradLit" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fffaeb"/>
+            <stop offset="100%" stop-color="#ffe093"/>
+          </linearGradient>
+          <linearGradient id="metalGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ece1c1"/>
+            <stop offset="100%" stop-color="#a1936a"/>
+          </linearGradient>
+        </defs>
+        <path class="shade" d="M18 96 C18 34 58 6 110 6 C162 6 202 34 202 96 L186 104 C158 82 62 82 34 104 Z"/>
+        <rect x="28" y="100" width="164" height="9" rx="4.5" fill="url(#metalGrad)"/>
+        <rect x="103" y="109" width="14" height="16" fill="url(#metalGrad)"/>
+        <rect x="105" y="125" width="10" height="106" rx="4" fill="url(#metalGrad)"/>
+        <ellipse cx="110" cy="238" rx="54" ry="10" fill="url(#metalGrad)"/>
+        <ellipse cx="110" cy="235" rx="54" ry="7" fill="#f0e6c8" opacity="0.35"/>
+        <circle cx="150" cy="101" r="4.5" fill="url(#metalGrad)"/>
+      </svg>
+      <div class="chain" id="cord"></div>
+      <div class="pull-knob" id="cordBall"></div>
+    </div>
+    <p class="lamp-caption">Presione o deslice el encendido para ver la hoja de vida de WILSON ARIZA</p>
+  </div>
+
+  <div class="sheet" id="sheet">
+    <header>
+      <div class="mark">WA</div>
+      <div class="id">
+        <h1>Wilson José Ariza Camargo</h1>
+        <p class="role">Soporte y Desarrollador de Sistemas</p>
+        <div class="contact">
+          <span>+57 300 774 1996</span>
+          <span class="dot"></span>
+          <span>Wac.7@hotmail.com</span>
+          <span class="dot"></span>
+          <span>San Jacinto, Colombia</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="body-grid">
+      <aside>
+        <div class="side-block">
+          <p class="side-title">Habilidades técnicas</p>
+          <div class="skill-group">
+            <h4>Desarrollo web</h4>
+            <div class="tags">
+              <span class="tag">WordPress</span><span class="tag">Divi</span><span class="tag">Elementor</span>
+              <span class="tag">Shopify</span><span class="tag">PHP</span><span class="tag">JavaScript</span>
+              <span class="tag">Python</span><span class="tag">HTML5/CSS</span><span class="tag">CMS</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h4>Soporte y redes</h4>
+            <div class="tags">
+              <span class="tag">Hardware</span><span class="tag">Redes</span><span class="tag">Seguridad informática</span>
+              <span class="tag">Soporte remoto</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h4>Bases de datos y servidores</h4>
+            <div class="tags">
+              <span class="tag">SQL Server</span><span class="tag">PostgreSQL</span><span class="tag">MySQL</span>
+              <span class="tag">CPanel/WHM</span><span class="tag">Hosting</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h4>Marketing digital</h4>
+            <div class="tags">
+              <span class="tag">SEO</span><span class="tag">SEM</span><span class="tag">Funnels</span>
+              <span class="tag">Email marketing</span><span class="tag">Google Analytics</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h4>Herramientas SIG</h4>
+            <div class="tags">
+              <span class="tag">ArcGIS</span><span class="tag">QGIS</span><span class="tag">QField</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h4>Gestión y diseño</h4>
+            <div class="tags">
+              <span class="tag">Scrum</span><span class="tag">Figma</span><span class="tag">Photoshop</span>
+              <span class="tag">Git</span><span class="tag">Wrike</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-block">
+          <p class="side-title">Formación académica</p>
+          <div class="edu-item">
+            <div class="deg">Ingeniería de Sistemas</div>
+            <div class="sch">Politécnico de la Costa Atlántica</div>
+            <div class="yr">Octubre 2021</div>
+          </div>
+          <div class="edu-item">
+            <div class="deg">Tecnología en Desarrollo de Software</div>
+            <div class="sch">Politécnico de la Costa Atlántica</div>
+            <div class="yr">Septiembre 2019</div>
+          </div>
+          <div class="edu-item">
+            <div class="deg">Técnico Profesional en Sistemas y Telecomunicaciones</div>
+            <div class="sch">San Mateo – Educación Superior</div>
+            <div class="yr">Septiembre 2016</div>
+          </div>
+        </div>
+      </aside>
+
+      <main>
+        <p class="lede">
+          Ingeniero de Sistemas y Tecnólogo en Desarrollo de Software con más de 7 años de experiencia combinada
+          en soporte técnico, mantenimiento de hardware y software, seguridad informática y desarrollo web.
+          Experiencia liderando el diseño y mantenimiento de sitios en WordPress y Shopify, administración de
+          servidores y bases de datos, y soporte a usuarios. Manejo de herramientas SIG (ArcGIS, QGIS, QField)
+          en proyectos catastrales recientes.
+        </p>
+
+        <section class="exp">
+          <p class="side-title main-title">Experiencia laboral</p>
+
+          <div class="role-item">
+            <div class="role-head">
+              <span class="title">Técnico de Sistemas</span>
+              <span class="dates">Nov 2025 – Jul 2026</span>
+            </div>
+            <div class="co">Instituto Geográfico Agustín Codazzi (a través de CORPROGRESO)</div>
+            <ul>
+              <li>Mantenimiento preventivo y correctivo de equipos tecnológicos, garantizando disponibilidad y seguridad informática.</li>
+              <li>Uso de ArcGIS, QGIS y QField en procesos catastrales y de georreferenciación.</li>
+              <li>Soporte de redes, impresoras y herramientas ofimáticas (Office, Excel).</li>
+              <li>Mesa de ayuda TI (tickets).</li>
+            </ul>
+          </div>
+
+          <div class="role-item">
+            <div class="role-head">
+              <span class="title">Técnico de Sistemas</span>
+              <span class="dates">Ene 2025 – Jun 2025</span>
+            </div>
+            <div class="co">Instituto Geográfico Agustín Codazzi (a través de Acción del Cauca S.A.S.)</div>
+            <ul>
+              <li>Mantenimiento de equipos tecnológicos y gestión de seguridad informática.</li>
+              <li>Aplicación de ArcGIS, QGIS y QField en labores catastrales y de campo.</li>
+              <li>Soporte técnico en redes, impresoras y herramientas de oficina.</li>
+              <li>Mesa de ayuda TI (tickets).</li>
+            </ul>
+          </div>
+
+          <div class="role-item">
+            <div class="role-head">
+              <span class="title">Ingeniero de Soporte y Desarrollo</span>
+              <span class="dates">Ago 2022 – Nov 2024</span>
+            </div>
+            <div class="co">Ciudad Creativa (Remoto)</div>
+            <ul>
+              <li>Liderazgo del desarrollo, mantenimiento y diseño de sitios en WordPress y tiendas Shopify.</li>
+              <li>Administración de hosting, CPanel/WHM, dominios, CMS y plugins; estrategias de SEO, SEM y email marketing.</li>
+              <li>Soporte técnico integral (servidores, seguridad informática, redes) y atención al cliente.</li>
+            </ul>
+          </div>
+
+          <div class="role-item">
+            <div class="role-head">
+              <span class="title">Soporte en Sistemas — Aprendiz Empresarial</span>
+              <span class="dates">May 2021 – Feb 2022</span>
+            </div>
+            <div class="co">Tránsito del Atlántico (Fundación Técnica Americana de Bolívar)</div>
+            <ul>
+              <li>Soporte a usuarios en redes y mantenimiento de equipos.</li>
+              <li>Desarrollo y mejora de la plataforma Orfeo (PHP) y su base de datos en MySQL.</li>
+              <li>Diseño y desarrollo de un aplicativo web institucional en WordPress.</li>
+            </ul>
+          </div>
+
+          <div class="role-item">
+            <div class="role-head">
+              <span class="title">Auxiliar de Sistemas</span>
+              <span class="dates">Jul 2012 – Oct 2015</span>
+            </div>
+            <div class="co">Morphocards de Colombia S.A.S.</div>
+            <ul>
+              <li>Administración de archivos bajo protocolos de seguridad y atención al usuario.</li>
+              <li>Gestión de bases de datos en SQL Server, impresoras y aplicaciones Oracle mediante Excel.</li>
+            </ul>
+          </div>
+
+          <details>
+            <summary>Seminarios y diplomados</summary>
+            <ul class="cert-list">
+              <li><span>Desarrollo de Aplicaciones Móviles con Ionic — Politécnico de la Costa Atlántica</span><span>Oct 2021</span></li>
+              <li><span>Seguridad Informática — Politécnico de la Costa Atlántica</span><span>Sep 2019</span></li>
+              <li><span>Seguridad Informática — San Mateo, Educación Superior</span><span>Jul 2016</span></li>
+            </ul>
+          </details>
+
+          <details>
+            <summary>Cursos y certificaciones</summary>
+            <ul class="cert-list">
+              <li><span>Refuerzo Reconocedor Predial Urbano Rural — IGAC</span><span>Mar 2026</span></li>
+              <li><span>Dive Deeper into Google Analytics 4 Data and Reports — Google</span><span>Sep 2025</span></li>
+              <li><span>Diseño Web Profesional, Práctico y desde Cero — Udemy</span><span>Dic 2022</span></li>
+              <li><span>Explorar Tecnología Emergente — IBM · MinTIC</span><span>Ago 2022</span></li>
+              <li><span>Los Bits y Bytes de las Redes Informáticas — Coursera (Google)</span><span>Nov 2020</span></li>
+              <li><span>Aspectos Básicos de la Asistencia Técnica — Coursera (Google)</span><span>Oct 2020</span></li>
+              <li><span>Aplicaciones de la Herramienta Ofimática Excel Nivel II — SENA</span><span>May 2018</span></li>
+            </ul>
+          </details>
+        </section>
+      </main>
+    </div>
+
+    <footer>
+      <a class="cta" href="mailto:Wac.7@hotmail.com">Contactar por correo</a>
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      var overlay = document.getElementById('lampOverlay');
+      var lampWrap = document.getElementById('lampWrap');
+      var cord = document.getElementById('cord');
+      var ball = document.getElementById('cordBall');
+      var sheet = document.getElementById('sheet');
+
+      var baseCordHeight = 90;
+      var maxPull = 60;
+      var pullThreshold = 34;
+      var dragging = false;
+      var startY = 0;
+      var offset = 0;
+      var activated = false;
+
+      function setPull(px){
+        cord.style.height = (baseCordHeight + px) + 'px';
+        ball.style.transform = 'translate(0,' + (baseCordHeight + px) + 'px)';
+      }
+
+      function snapBack(){
+        cord.style.transition = 'height .3s ease';
+        ball.style.transition = 'transform .3s ease';
+        setPull(0);
+        setTimeout(function(){
+          cord.style.transition = '';
+          ball.style.transition = '';
+        }, 300);
+      }
+
+      function activateLamp(){
+        if(activated) return;
+        activated = true;
+        setPull(maxPull);
+        lampWrap.classList.add('lit');
+        document.body.classList.add('unlocked');
+        setTimeout(function(){
+          overlay.classList.add('hide');
+          sheet.classList.add('revealed');
+        }, 650);
+      }
+
+      ball.addEventListener('pointerdown', function(e){
+        if(activated) return;
+        dragging = true;
+        startY = e.clientY;
+        ball.setPointerCapture(e.pointerId);
+      });
+
+      ball.addEventListener('pointermove', function(e){
+        if(!dragging || activated) return;
+        var dy = e.clientY - startY;
+        dy = Math.max(0, Math.min(maxPull, dy));
+        offset = dy;
+        setPull(dy);
+      });
+
+      function endDrag(){
+        if(!dragging) return;
+        dragging = false;
+        if(offset >= pullThreshold){
+          activateLamp();
+        } else {
+          snapBack();
+        }
+        offset = 0;
+      }
+
+      ball.addEventListener('pointerup', endDrag);
+      ball.addEventListener('pointercancel', endDrag);
+      ball.addEventListener('click', function(){
+        if(!dragging) activateLamp();
+      });
+
+      document.body.classList.remove('unlocked');
+    })();
+  </script>
+</body>
+</html>
